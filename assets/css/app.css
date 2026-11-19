@@ -184,7 +184,7 @@ h2{font-size:12.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercas
 /* surfaces: translucent panes over the drifting backdrop, lit edge, cursor sheen */
 body{background:var(--bg)}
 .top-in,.card,.hero,.banner,.cat,.pl,.stat,.list,.note{
-  background:radial-gradient(280px circle at var(--mx) var(--my),var(--sheen),transparent 65%),linear-gradient(135deg,var(--pane-hi),transparent 55%),var(--pane);
+  background:var(--sheen),transparent 65%),linear-gradient(135deg,var(--pane-hi),transparent 55%),var(--pane);
   -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--pane-edge)}
 .top-in{border:0}
 .cat .list,.pl .card,.pr .card,.cat .note{background:var(--pane-in);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 .5px var(--line)}
@@ -193,12 +193,12 @@ body{background:var(--bg)}
 .hero::after{background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 26%,transparent),transparent)}
 .note{box-shadow:var(--pane-edge)}
 
-.acard{background:radial-gradient(220px circle at var(--mx) var(--my),var(--sheen),transparent 70%),var(--pane-in);
+.acard{background:var(--sheen),transparent 70%),var(--pane-in);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 .5px var(--line);overflow:hidden;
   transition:box-shadow .2s}
-.acard:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px var(--accent),0 10px 26px color-mix(in srgb,var(--accent) 18%,transparent)}
+.acard:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px var(--accent)}
 .lno{background:var(--pane-in);box-shadow:inset 0 0 0 .5px var(--line)}
-.item{background:radial-gradient(260px circle at var(--mx) var(--my),var(--sheen),transparent 70%)}
+.item{background:var(--sheen),transparent 70%)}
 
 .nav{background:var(--inset);box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}
 .ind{background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.62));box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 3px 10px rgba(0,0,0,.14);border-radius:10px}

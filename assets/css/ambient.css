@@ -1,22 +1,20 @@
-/* Shared by both pages: translucent pane tokens and the pointer sheen. */
-@property --mx { syntax: "<length>"; inherits: false; initial-value: -400px; }
-@property --my { syntax: "<length>"; inherits: false; initial-value: -400px; }
+/* Shared by both pages: translucent pane tokens. */
 
 :root {
-  --pane: rgba(255,255,255,.58); --pane-hi: rgba(255,255,255,.34); --sheen: rgba(255,255,255,.55);
+  --pane: rgba(255,255,255,.58); --pane-hi: rgba(255,255,255,.34);
   --pane-in: rgba(255,255,255,.4); --inset: rgba(0,0,0,.045);
   --pane-edge: inset 0 1px 0 rgba(255,255,255,.75), inset 0 0 0 1px rgba(255,255,255,.32), 0 12px 34px rgba(30,30,60,.10), 0 2px 6px rgba(30,30,60,.06);
   --blur: blur(26px) saturate(170%);
   }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --pane: rgba(22,22,24,.78); --pane-hi: rgba(255,255,255,.05); --sheen: rgba(255,255,255,.08);
+    --pane: rgba(22,22,24,.78); --pane-hi: rgba(255,255,255,.05);
     --pane-in: rgba(255,255,255,.06); --inset: rgba(0,0,0,.22);
     --pane-edge: inset 0 1px 0 rgba(255,255,255,.18), inset 0 0 0 1px rgba(255,255,255,.07), 0 16px 42px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.26);
   }
 }
 :root[data-theme="dark"] {
-  --pane: rgba(22,22,24,.78); --pane-hi: rgba(255,255,255,.05); --sheen: rgba(255,255,255,.08);
+  --pane: rgba(22,22,24,.78); --pane-hi: rgba(255,255,255,.05);
   --pane-in: rgba(255,255,255,.06); --inset: rgba(0,0,0,.22);
   --pane-edge: inset 0 1px 0 rgba(255,255,255,.18), inset 0 0 0 1px rgba(255,255,255,.07), 0 16px 42px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.26);
 }

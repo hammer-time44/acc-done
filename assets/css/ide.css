@@ -155,7 +155,7 @@ body{font-size:13.5px;letter-spacing:-.008em;padding-block:16px}
 @media (max-width:900px){.ide{border-radius:16px}}
 
 /* surfaces: one translucent window over the drifting backdrop */
-.ide{background:radial-gradient(420px circle at var(--mx) var(--my),var(--sheen),transparent 65%),linear-gradient(135deg,var(--pane-hi),transparent 50%),var(--pane);
+.ide{background:var(--sheen),transparent 65%),linear-gradient(135deg,var(--pane-hi),transparent 50%),var(--pane);
   -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--pane-edge);border-radius:24px}
 .side,.tabrow,.status,.term{background:var(--pane-in)}
 .chat,.gutter,.editor,.center{background:transparent}

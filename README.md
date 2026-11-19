@@ -28,7 +28,6 @@ accdone/
 │   └── js/
 │       ├── app.js          routing, code pages, problems, mock exam, test runner
 │       ├── ide.js          IDE logic
-│       ├── motion.js       pointer sheen
 │       └── data/
 │           ├── algos.js    the 26 topics with their Java code
 │           └── problems.js coding problems and tests
