@@ -98,8 +98,8 @@
     var shaky = ALGOS.filter(function (a) { return S.last[a.id] && conf(a.id) === 1; }).length;
     var due = ALGOS.filter(function (a) { return S.last[a.id] && isDue(a.id); }).length;
     var pct = total ? Math.round(ok / total * 100) : 0, C = 2 * Math.PI * 52;
-    var h = '<div><h1>Algorithms</h1><p class="lead" style="margin-top:8px">Pick a topic to open its Java code, then rate how well you know it.</p>';
-    h += '<div class="tags"><span class="on">' + total + ' topics</span><span>' + shaky + ' shaky</span><span>' + due + ' due</span><span>' + ok + ' comfortable</span></div></div>';
+    var h = '<div>';
+    h += '<div class="tags" style="margin-top:0"><span class="on">' + total + ' topics</span><span>' + shaky + ' shaky</span><span>' + due + ' due</span><span>' + ok + ' comfortable</span></div></div>';
     h += '<div class="sum"><div class="ring"><svg viewBox="0 0 120 120"><circle class="tk" cx="60" cy="60" r="52"/><circle class="pg" cx="60" cy="60" r="52" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - pct / 100)).toFixed(1) + '"/></svg><b>' + pct + '%</b></div>';
     h += '<div class="sumt"><span>Comfortable with</span><b>' + ok + ' / ' + total + '</b></div><div class="sumbars">';
     ["CAT-1", "CAT-2"].forEach(function (c) {
@@ -113,7 +113,7 @@
       h += '<section class="cat"><h2><span>' + c + '</span><em>' + d + ' / ' + L.length + '</em></h2><div class="cards">';
       L.forEach(function (a) {
         var k = conf(a.id);
-        h += '<button class="acard" type="button" data-code="' + a.id + '"><span class="lno">L' + a.lec + '</span><span class="aname">' + esc(a.name) + '</span><span class="lv l' + k + '">' + LV[k] + '</span><span class="tick' + (k >= 2 ? " on" : "") + '">' + CK + '</span></button>';
+        h += '<button class="acard" type="button" data-code="' + a.id + '"><span class="lno">L' + a.lec + '</span><span class="aname">' + esc(a.name) + '</span><span class="lv l' + k + '">' + LV[k] + '</span><span class="tick' + (k >= 2 ? " on" : "") + '" data-tick="' + a.id + '" role="checkbox" aria-checked="' + (k >= 2) + '" aria-label="Mark ' + esc(a.name) + ' as done" tabindex="0">' + CK + '</span></button>';
       });
       h += "</div></section>";
     });
@@ -121,9 +121,19 @@
     h += '<p class="muted" id="nomatch" hidden>No topic matches your search.</p>';
     view.innerHTML = h;
     var q = $("q"); if (q) q.value = "";
+    function flip(id) {
+      S.conf[id] = conf(id) >= 2 ? 0 : 2; if (S.conf[id]) S.last[id] = Date.now(); else delete S.last[id];
+      save(); var v = q ? q.value : "", y = window.scrollY; home(); if ($("q")) { $("q").value = v; filterHome(); } window.scrollTo(0, y);
+    }
     view.onclick = function (e) {
+      var t = e.target.closest("[data-tick]");
+      if (t) { e.stopPropagation(); flip(t.getAttribute("data-tick")); return; }
       var c = e.target.closest("[data-code]");
       if (c) { location.hash = c.getAttribute("data-code"); }
+    };
+    view.onkeydown = function (e) {
+      var t = e.target.closest && e.target.closest("[data-tick]");
+      if (t && (e.key === " " || e.key === "Enter")) { e.preventDefault(); e.stopPropagation(); flip(t.getAttribute("data-tick")); }
     };
   }
   function filterHome() {
