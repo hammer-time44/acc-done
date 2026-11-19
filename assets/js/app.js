@@ -95,13 +95,12 @@
   function home() {
     var LV = ["New", "Shaky", "OK", "Solid"], CK = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
     var total = ALGOS.length, ok = ALGOS.filter(function (a) { return conf(a.id) >= 2; }).length;
-    var shaky = ALGOS.filter(function (a) { return S.last[a.id] && conf(a.id) === 1; }).length;
-    var due = ALGOS.filter(function (a) { return S.last[a.id] && isDue(a.id); }).length;
     var pct = total ? Math.round(ok / total * 100) : 0, C = 2 * Math.PI * 52;
     var h = '<div>';
-    h += '<div class="tags" style="margin-top:0"><span class="on">' + total + ' topics</span><span>' + shaky + ' shaky</span><span>' + due + ' due</span><span>' + ok + ' comfortable</span></div></div>';
+    var n1 = ALGOS.filter(function (a) { return a.cat === "CAT-1"; }).length;
+    h += '<div class="tags" style="margin-top:0"><span class="on">' + total + ' topics</span><span>' + n1 + ' in CAT-1</span><span>' + (total - n1) + ' in CAT-2</span><span>' + ok + ' done</span><span>' + (total - ok) + ' left</span></div></div>';
     h += '<div class="sum"><div class="ring"><svg viewBox="0 0 120 120"><circle class="tk" cx="60" cy="60" r="52"/><circle class="pg" cx="60" cy="60" r="52" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - pct / 100)).toFixed(1) + '"/></svg><b>' + pct + '%</b></div>';
-    h += '<div class="sumt"><span>Comfortable with</span><b>' + ok + ' / ' + total + '</b></div><div class="sumbars">';
+    h += '<div class="sumt"><span>Topics done</span><b>' + ok + ' / ' + total + '</b></div><div class="sumbars">';
     ["CAT-1", "CAT-2"].forEach(function (c) {
       var L = ALGOS.filter(function (a) { return a.cat === c; }), d = L.filter(function (a) { return conf(a.id) >= 2; }).length;
       h += '<div><span>' + c + '</span><i><u style="width:' + (L.length ? d / L.length * 100 : 0) + '%"></u></i></div>';
@@ -113,7 +112,7 @@
       h += '<section class="cat"><h2><span>' + c + '</span><em>' + d + ' / ' + L.length + '</em></h2><div class="cards">';
       L.forEach(function (a) {
         var k = conf(a.id);
-        h += '<button class="acard" type="button" data-code="' + a.id + '"><span class="lno">L' + a.lec + '</span><span class="aname">' + esc(a.name) + '</span><span class="lv l' + k + '">' + LV[k] + '</span><span class="tick' + (k >= 2 ? " on" : "") + '" data-tick="' + a.id + '" role="checkbox" aria-checked="' + (k >= 2) + '" aria-label="Mark ' + esc(a.name) + ' as done" tabindex="0">' + CK + '</span></button>';
+        h += '<button class="acard" type="button" data-code="' + a.id + '"><span class="lno">L' + a.lec + '</span><span class="aname">' + esc(a.name) + '</span><span class="tick' + (k >= 2 ? " on" : "") + '" data-tick="' + a.id + '" role="checkbox" aria-checked="' + (k >= 2) + '" aria-label="Mark ' + esc(a.name) + ' as done" tabindex="0">' + CK + '</span></button>';
       });
       h += "</div></section>";
     });
