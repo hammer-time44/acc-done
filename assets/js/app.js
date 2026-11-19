@@ -51,6 +51,7 @@
     if (!n.querySelector("button")) n.innerHTML = '<span class="ind" id="ind"></span>' + MODES.map(function (m) { return '<button type="button" data-m="' + m[0] + '" aria-current="false">' + m[1] + "</button>"; }).join("");
     n.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-current", b.getAttribute("data-m") === (mode === "code" ? "home" : mode)); });
     slide();
+    if ($("finder")) $("finder").hidden = mode !== "home";
     var l = leftLabel(); $("count").textContent = l ? (/h/.test(l) ? l + " to exam" : l) : "";
   }
   $("nav").addEventListener("click", function (e) { var b = e.target.closest("[data-m]"); if (b) go(b.getAttribute("data-m")); });
@@ -92,22 +93,52 @@
   }
   /* ---------- home ---------- */
   function home() {
-    var h = '';
+    var LV = ["New", "Shaky", "OK", "Solid"], CK = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    var total = ALGOS.length, ok = ALGOS.filter(function (a) { return conf(a.id) >= 2; }).length;
+    var shaky = ALGOS.filter(function (a) { return S.last[a.id] && conf(a.id) === 1; }).length;
+    var due = ALGOS.filter(function (a) { return S.last[a.id] && isDue(a.id); }).length;
+    var pct = total ? Math.round(ok / total * 100) : 0, C = 2 * Math.PI * 52;
+    var h = '<div><h1>Algorithms</h1><p class="lead" style="margin-top:8px">Pick a topic to open its Java code, then rate how well you know it.</p>';
+    h += '<div class="tags"><span class="on">' + total + ' topics</span><span>' + shaky + ' shaky</span><span>' + due + ' due</span><span>' + ok + ' comfortable</span></div></div>';
+    h += '<div class="sum"><div class="ring"><svg viewBox="0 0 120 120"><circle class="tk" cx="60" cy="60" r="52"/><circle class="pg" cx="60" cy="60" r="52" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - pct / 100)).toFixed(1) + '"/></svg><b>' + pct + '%</b></div>';
+    h += '<div class="sumt"><span>Comfortable with</span><b>' + ok + ' / ' + total + '</b></div><div class="sumbars">';
+    ["CAT-1", "CAT-2"].forEach(function (c) {
+      var L = ALGOS.filter(function (a) { return a.cat === c; }), d = L.filter(function (a) { return conf(a.id) >= 2; }).length;
+      h += '<div><span>' + c + '</span><i><u style="width:' + (L.length ? d / L.length * 100 : 0) + '%"></u></i></div>';
+    });
+    h += '</div></div>';
     h += '<div class="cats">';
     ["CAT-1", "CAT-2"].forEach(function (c) {
-      var L = ALGOS.filter(function (a) { return a.cat === c; });
-      h += '<section class="cat"><h2>' + c + '</h2><div class="cards">';
+      var L = ALGOS.filter(function (a) { return a.cat === c; }), d = L.filter(function (a) { return conf(a.id) >= 2; }).length;
+      h += '<section class="cat"><h2><span>' + c + '</span><em>' + d + ' / ' + L.length + '</em></h2><div class="cards">';
       L.forEach(function (a) {
-        h += '<button class="acard" type="button" data-code="' + a.id + '"><span class="lno">L' + a.lec + '</span><span class="aname">' + esc(a.name) + '</span></button>';
+        var k = conf(a.id);
+        h += '<button class="acard" type="button" data-code="' + a.id + '"><span class="lno">L' + a.lec + '</span><span class="aname">' + esc(a.name) + '</span><span class="lv l' + k + '">' + LV[k] + '</span><span class="tick' + (k >= 2 ? " on" : "") + '">' + CK + '</span></button>';
       });
       h += "</div></section>";
     });
     h += "</div>";
+    h += '<p class="muted" id="nomatch" hidden>No topic matches your search.</p>';
     view.innerHTML = h;
+    var q = $("q"); if (q) q.value = "";
     view.onclick = function (e) {
       var c = e.target.closest("[data-code]");
       if (c) { location.hash = c.getAttribute("data-code"); }
     };
+  }
+  function filterHome() {
+    var q = $("q"), t = (q ? q.value : "").trim().toLowerCase(), n = 0;
+    view.querySelectorAll(".acard").forEach(function (b) { var m = !t || b.textContent.toLowerCase().indexOf(t) >= 0; b.hidden = !m; if (m) n++; });
+    view.querySelectorAll(".cat").forEach(function (c) { c.hidden = !!t && !c.querySelector(".acard:not([hidden])"); });
+    var nm = $("nomatch"); if (nm) nm.hidden = n > 0;
+  }
+  if ($("q")) {
+    $("q").addEventListener("input", filterHome);
+    $("q").addEventListener("keydown", function (e) { if (e.key === "Escape") { this.value = ""; filterHome(); this.blur(); } });
+    document.addEventListener("keydown", function (e) {
+      var t = e.target && e.target.tagName;
+      if (e.key === "/" && mode === "home" && t !== "INPUT" && t !== "TEXTAREA" && t !== "SELECT") { e.preventDefault(); $("q").focus(); }
+    });
   }
 
   /* ---------- java code page ---------- */
