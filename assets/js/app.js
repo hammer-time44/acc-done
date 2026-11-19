@@ -97,8 +97,7 @@
     var total = ALGOS.length, ok = ALGOS.filter(function (a) { return conf(a.id) >= 2; }).length;
     var pct = total ? Math.round(ok / total * 100) : 0, C = 2 * Math.PI * 52;
     var h = '<div>';
-    var n1 = ALGOS.filter(function (a) { return a.cat === "CAT-1"; }).length;
-    h += '<div class="tags" style="margin-top:0"><span class="on">' + total + ' topics</span><span>' + n1 + ' in CAT-1</span><span>' + (total - n1) + ' in CAT-2</span><span>' + ok + ' done</span><span>' + (total - ok) + ' left</span></div></div>';
+    h += '<div class="tags" style="margin-top:0"><span class="on">' + total + ' topics</span><span>' + ok + ' done</span></div></div>';
     h += '<div class="sum"><div class="ring"><svg viewBox="0 0 120 120"><circle class="tk" cx="60" cy="60" r="52"/><circle class="pg" cx="60" cy="60" r="52" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - pct / 100)).toFixed(1) + '"/></svg><b>' + pct + '%</b></div>';
     h += '<div class="sumt"><span>Topics done</span><b>' + ok + ' / ' + total + '</b></div><div class="sumbars">';
     ["CAT-1", "CAT-2"].forEach(function (c) {
