@@ -1,25 +1,58 @@
-public class BoothMultiplication {
+import java.util.Scanner;
 
-    // Booth's algorithm: scan the multiplier bits with the previous bit.
-    //   pair (bit, prev) = 01 -> add      multiplicand << i
-    //   pair (bit, prev) = 10 -> subtract multiplicand << i
-    //   00 and 11             -> do nothing
-    static long multiply(int m, int r) {
-        long product = 0;
-        int prev = 0;
-        for (int i = 0; i < 32; i++) {
-            int bit = (r >> i) & 1;
-            if (bit == 0 && prev == 1) product += (long) m << i;
-            else if (bit == 1 && prev == 0) product -= (long) m << i;
-            prev = bit;
+//Booth's Algorithm
+public class Main {
+        public static void main(String[] args) {
+            int multiplicand = 14;  // Q
+            int multiplier = 6;     // M
+
+            int product = 0;
+            int multiplicandBits = Integer.toBinaryString(multiplicand).length();
+
+            for (int i = 0; i < multiplicandBits; i++) {
+                int currentBit = (multiplicand & 0b1);
+
+                if (currentBit == 1) {
+                    product += multiplier;
+                }
+
+                multiplier <<= 1;
+                multiplicand >>>= 1;
+            }
+
+            System.out.println("Result: " + product);
+    }
+    }
+
+// Booth: second version
+public class BoothAlt {
+    public static int multiply(int n1, int n2) {
+        int m = n1;
+        int r = n2;
+        int A = n1;
+        int S = -n1;
+        int P = 0;
+        int count = Integer.SIZE;
+        System.out.print(count);
+                    while (count > 0) {
+            if ((r & 1) == 1) {
+                P += A;
+                S += m;
+            }
+            A <<= 1;
+            S <<= 1;
+            count--;
+            r >>= 1;
         }
-        return product;
+        return P;
     }
-
     public static void main(String[] args) {
-        System.out.println(multiply(3, 4));       // 12
-        System.out.println(multiply(7, -3));      // -21
-        System.out.println(multiply(-6, -5));     // 30
-        System.out.println(multiply(123, 456));   // 56088
-    }
+       // Scanner scan = new Scanner(System.in);
+       // Booth b = new Booth();
+        System.out.println("Enter two integer numbers -");
+        int n1 = -5;
+        int n2 = 12;
+        int result = multiply(n1, n2);
+        System.out.println("\n\nResult : " + n1 + " * " + n2 + " = " + result);
+}
 }

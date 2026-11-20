@@ -1,49 +1,65 @@
-import java.util.Arrays;
+// Java code for above implementation
+import java.io.*;
 
-public class BlockSwap {
-
-    static void swap(int[] a, int i, int j, int len) {
-        for (int k = 0; k < len; k++) {
-            int t = a[i + k]; a[i + k] = a[j + k]; a[j + k] = t;
-        }
-    }
-
-    // Rotate left by d using the block swap algorithm: O(n) time, O(1) space
-    static void rotate(int[] a, int d) {
-        int n = a.length;
-        if (n == 0) return;
-        d %= n;
-        if (d == 0) return;
-        int i = d, j = n - d;
+public class Main {
+    static void leftRotate(int arr[], int d, int n)
+    {
+        int i, j;
+        if (d == 0 || d == n)
+            return;
+        /* If number of elements to be rotated is more than
+        * array size*/
+        if (d > n)
+            d = d % n;
+        i = d;
+        j = n - d;
         while (i != j) {
-            if (i < j) {                       // A is shorter than B
-                swap(a, d - i, d + j - i, i);
+            if (i < j) /*A is shorter*/
+            {
+                swap(arr, d - i, d + j - i, i);
                 j -= i;
-            } else {                           // B is shorter than A
-                swap(a, d - i, d, j);
+            }
+
+            else /*B is shorter*/
+            {
+                swap(arr, d - i, d, j);
                 i -= j;
             }
+            // printArray(arr, 7);
         }
-        swap(a, d - i, d, i);
+        /*Finally, block swap A and B*/
+        swap(arr, d - i, d, i);
     }
 
-    // Reversal method for comparison
-    static void rotateReversal(int[] a, int d) {
-        int n = a.length;
-        d %= n;
-        reverse(a, 0, d - 1); reverse(a, d, n - 1); reverse(a, 0, n - 1);
+    /*UTILITY FUNCTIONS*/
+    /* function to print an array */
+    public static void printArray(int arr[], int size)
+    {
+        int i;
+        for (i = 0; i < size; i++)
+            System.out.print(arr[i] + " ");
+        System.out.println();
     }
 
-    static void reverse(int[] a, int i, int j) {
-        while (i < j) { int t = a[i]; a[i++] = a[j]; a[j--] = t; }
+    /*This function swaps d elements
+    starting at index fi with d elements
+    starting at index si */
+    public static void swap(int arr[], int fi, int si,
+                            int d)
+    {
+        int i, temp;
+        for (i = 0; i < d; i++) {
+            temp = arr[fi + i];
+            arr[fi + i] = arr[si + i];
+            arr[si + i] = temp;
+        }
     }
 
-    public static void main(String[] args) {
-        int[] a = {1, 2, 3, 4, 5, 6, 7};
-        rotate(a, 2);
-        System.out.println(Arrays.toString(a));    // [3, 4, 5, 6, 7, 1, 2]
-        int[] b = {1, 2, 3, 4, 5, 6, 7};
-        rotateReversal(b, 2);
-        System.out.println(Arrays.toString(b));
+    // Driver Code
+    public static void main(String[] args)
+    {
+        int arr[] = { 11, 12, 13, 14, 15 };
+        leftRotate(arr, 2, 5);
+        printArray(arr, 5);
     }
 }

@@ -1,30 +1,24 @@
-public class BinaryPalindrome {
+class Main {
+public static boolean isPalindrome(int N)
+{
+    // Converting N into binary representation
+    String s = Integer.toBinaryString(N);
 
-    // Reverse the bits of n (only its significant bits) and compare
-    static boolean isPalindrome(int n) {
-        int rev = 0, t = n;
-        while (t > 0) {
-            rev = (rev << 1) | (t & 1);
-            t >>= 1;
-        }
-        return rev == n;
+    // Checking if it is palindrome or not
+    int i = 0, j = s.length() - 1;
+    while (i < j) {
+    if (s.charAt(i) != s.charAt(j)) {
+        return false;
     }
-
-    // Two pointers on the bit positions, no extra number
-    static boolean isPalindromePointers(int n) {
-        int hi = 31 - Integer.numberOfLeadingZeros(n), lo = 0;
-        while (lo < hi) {
-            if (((n >> lo) & 1) != ((n >> hi) & 1)) return false;
-            lo++;
-            hi--;
-        }
-        return true;
+    i++;
+    j--;
     }
-
-    public static void main(String[] args) {
-        int[] tests = {9, 5, 6, 1, 7, 585, 1000};
-        for (int n : tests)
-            System.out.println(n + " (" + Integer.toBinaryString(n) + ") -> "
-                + isPalindrome(n) + " " + isPalindromePointers(n));
-    }
+    return true;
+}
+public static void main(String[] args) {
+    int x = 16;
+    System.out.println(isPalindrome(x));
+    x = 17;
+    System.out.println(isPalindrome(x));
+}
 }

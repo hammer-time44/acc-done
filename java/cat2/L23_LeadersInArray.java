@@ -1,23 +1,30 @@
-import java.util.*;
+import java.io.*;
+public class Main
+{
+    /* Java Function to print leaders in an array */
+    static void printLeaders(int arr[], int size)
+    {
+        int max_from_right = arr[size-1];
 
-public class LeadersInArray {
+        /* Rightmost element is always leader */
+        System.out.print(max_from_right + " ");
 
-    // A leader is >= every element to its right.
-    static List<Integer> leaders(int[] a) {
-        LinkedList<Integer> out = new LinkedList<>();
-        int max = Integer.MIN_VALUE;
-        for (int i = a.length - 1; i >= 0; i--) {
-            if (a[i] >= max) {
-                out.addFirst(a[i]);
-                max = a[i];
+        for (int i = size-2; i >= 0; i--)
+        {
+            if (max_from_right < arr[i])
+            {
+            max_from_right = arr[i];
+            System.out.print(max_from_right + " ");
             }
         }
-        return out;
     }
 
-    public static void main(String[] args) {
-        System.out.println(leaders(new int[]{16, 17, 4, 3, 5, 2}));   // [17, 5, 2]
-        System.out.println(leaders(new int[]{1, 2, 3, 4, 0}));        // [4, 0]
-        System.out.println(leaders(new int[]{7, 7, 7}));              // [7, 7, 7]
+    /* Driver program to test above functions */
+    public static void main(String[] args)
+    {
+
+        int arr[] = new int[]{16, 17, 4, 3, 5, 2};
+        int n = arr.length;
+        printLeaders(arr, n);
     }
 }

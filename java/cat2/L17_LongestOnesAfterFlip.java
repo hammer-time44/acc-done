@@ -1,25 +1,43 @@
-public class LongestOnesAfterFlip {
+// Java program to find length of
+// longest subsegment of all 1's
+// by changing at most k 0's
+import java.io.*;
 
-    // Treat n as 32 bits. Flip one 0 to 1 and return the longest run of 1s.
-    static int longestOnes(int n) {
-        if (n == -1) return 32;
-        int cur = 0, prev = 0, best = 1;
-        while (n != 0) {
-            if ((n & 1) == 1) cur++;
-            else {
-                prev = ((n & 2) == 0) ? 0 : cur;   // next bit 0: nothing to join
-                cur = 0;
-            }
-            best = Math.max(best, prev + cur + 1);
-            n >>>= 1;
+class Main {
+
+static int longestSubSeg(int a[], int n,int k)
+{
+    int cnt0 = 0;
+    int l = 0;
+    int max_len = 0;
+
+    // i decides current ending point
+    for (int i = 0; i < n; i++) {
+        if (a[i] == 0)
+            cnt0++;
+
+        // If there are more 0's move
+        // left point for current ending
+        // point.
+        while (cnt0 > k) {
+            if (a[l] == 0)
+                cnt0--;
+            l++;
         }
-        return best;
+
+        max_len = Math.max(max_len, i - l + 1);
     }
 
-    public static void main(String[] args) {
-        System.out.println(longestOnes(1775));   // 11011101111 -> 8
-        System.out.println(longestOnes(15));     // 5
-        System.out.println(longestOnes(0));      // 1
-        System.out.println(longestOnes(5));      // 101 -> 3
-    }
+    return max_len;
+}
+
+// Driver code
+public static void main (String[] args)
+{
+    int a[] = { 1, 1, 0, 0, 1, 1, 1, 1, 1 };
+    int k = 1;
+    int n = a.length;
+    System.out.println( longestSubSeg(a, n, k));
+
+}
 }

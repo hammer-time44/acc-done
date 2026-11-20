@@ -1,23 +1,34 @@
-public class MaxProductSubarray {
+// Maximum product sub array
+//method 2
+class Solution {
+    public int maxProduct(int[] nums) {
 
-    // A negative can turn the smallest product into the largest,
-    // so track both the max and the min product ending at i.
-    static int maxProduct(int[] a) {
-        int max = a[0], min = a[0], best = a[0];
-        for (int i = 1; i < a.length; i++) {
-            int x = a[i];
-            int c2 = max * x, c3 = min * x;
-            max = Math.max(x, Math.max(c2, c3));
-            min = Math.min(x, Math.min(c2, c3));
-            best = Math.max(best, max);
+        int n = nums.length;
+        int l=1,r=1;
+        int ans=nums[0];
+
+        for(int i=0;i<n;i++){
+
+            //if any of l or r become 0 then update it to 1
+            l = l==0 ? 1 : l;
+            r = r==0 ? 1 : r;
+
+            l *= nums[i];   //prefix product
+            r *= nums[n-1-i];    //suffix product
+
+            ans = Math.max(ans,Math.max(l,r));
+
         }
-        return best;
-    }
 
-    public static void main(String[] args) {
-        System.out.println(maxProduct(new int[]{2, 3, -2, 4}));        // 6
-        System.out.println(maxProduct(new int[]{-2, 0, -1}));          // 0
-        System.out.println(maxProduct(new int[]{-2, 3, -4}));          // 24
-        System.out.println(maxProduct(new int[]{2, -5, -2, -4, 3}));   // 24
+        return ans;
     }
 }
+    class Main
+    {
+        public static void main(String srg[])
+        {
+            Solution S= new Solution();
+            int a[]={1,-2,-3,0,7,-8,-2};
+            System.out.println(S.maxProduct(a));
+        }
+    }

@@ -37,7 +37,7 @@
   var sel = (ALGOS[0] || {}).id, timer = null;
 
   /* ---------- shell ---------- */
-  var MODES = [["home", "Algorithms"], ["solve", "Problems"], ["mock", "Mock exam"]];
+  var MODES = [["home", "Algorithms"], ["solve", "Problems"], ["mock", "Mock exam"], ["guide", "Guide"]];
   var mode = "home";
   function slide() {
     var n = $("nav"), b = n.querySelector('[aria-current="true"]'), i = $("ind");
@@ -74,14 +74,14 @@
     if (location.hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
     if (id) sel = id;
     mode = m; nav();
-    ({ home: home, solve: solve, mock: mock })[m](); enter();
+    ({ home: home, solve: solve, mock: mock, guide: guide })[m](); enter();
     window.scrollTo(0, 0);
   }
   function picker() {
     var withRandom = true;
     var h = '<select class="sel" id="pick" aria-label="Algorithm">';
     if (withRandom) h += '<option value="__random">Random, weak and due first</option>';
-    ["CAT-1", "CAT-2"].forEach(function (c) { h += '<optgroup label="' + c + '">'; ALGOS.filter(function (a) { return a.cat === c && true; }).forEach(function (a) { h += '<option value="' + a.id + '"' + (!withRandom && a.id === sel ? " selected" : "") + ">L" + a.lec + " · " + esc(a.name) + "</option>"; }); h += "</optgroup>"; });
+    ["CAT-1", "CAT-2", "FAT"].forEach(function (c) { h += '<optgroup label="' + c + '">'; ALGOS.filter(function (a) { return a.cat === c && true; }).forEach(function (a) { h += '<option value="' + a.id + '"' + (!withRandom && a.id === sel ? " selected" : "") + ">L" + a.lec + " · " + esc(a.name) + "</option>"; }); h += "</optgroup>"; });
     return h + "</select>";
   }
   function record(id, m, c, mins, hint) {
@@ -92,6 +92,14 @@
     save(); nav();
   }
   /* ---------- home ---------- */
+  var BUCKETS = ["CAT-1", "CAT-2", "FAT"], PICK = null;
+  function homePick() {
+    if (!PICK) { try { PICK = JSON.parse(localStorage.getItem("acc-pick")); } catch (e) {} }
+    if (!Array.isArray(PICK)) PICK = [];
+    PICK = PICK.filter(function (c) { return BUCKETS.indexOf(c) >= 0; });
+    if (!PICK.length) PICK = ["CAT-1", "CAT-2"];
+    return PICK.slice();
+  }
   function home() {
     var LV = ["New", "Shaky", "OK", "Solid"], CK = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
     var total = ALGOS.length, ok = ALGOS.filter(function (a) { return conf(a.id) >= 2; }).length;
@@ -100,13 +108,15 @@
     h += '<div class="tags" style="margin-top:0"><span class="on">' + total + ' topics</span><span>' + ok + ' done</span></div></div>';
     h += '<div class="sum"><div class="ring"><svg viewBox="0 0 120 120"><circle class="tk" cx="60" cy="60" r="52"/><circle class="pg" cx="60" cy="60" r="52" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - pct / 100)).toFixed(1) + '"/></svg><b>' + pct + '%</b></div>';
     h += '<div class="sumt"><span>Topics done</span><b>' + ok + ' / ' + total + '</b></div><div class="sumbars">';
-    ["CAT-1", "CAT-2"].forEach(function (c) {
+    BUCKETS.forEach(function (c) {
       var L = ALGOS.filter(function (a) { return a.cat === c; }), d = L.filter(function (a) { return conf(a.id) >= 2; }).length;
       h += '<div><span>' + c + '</span><i><u style="width:' + (L.length ? d / L.length * 100 : 0) + '%"></u></i></div>';
     });
     h += '</div></div>';
-    h += '<div class="cats">';
-    ["CAT-1", "CAT-2"].forEach(function (c) {
+    var pick = homePick();
+    h += '<div class="catpick" role="group" aria-label="Show buckets">' + BUCKETS.map(function (c) { return '<button type="button" class="chipb' + (pick.indexOf(c) >= 0 ? " on" : "") + '" data-pick="' + c + '" aria-pressed="' + (pick.indexOf(c) >= 0) + '">' + c + '</button>'; }).join("") + '</div>';
+    h += '<div class="cats" style="--n:' + Math.max(pick.length, 1) + '">';
+    BUCKETS.filter(function (c) { return pick.indexOf(c) >= 0; }).forEach(function (c) {
       var L = ALGOS.filter(function (a) { return a.cat === c; }), d = L.filter(function (a) { return conf(a.id) >= 2; }).length;
       h += '<section class="cat"><h2><span>' + c + '</span><em>' + d + ' / ' + L.length + '</em></h2><div class="cards">';
       L.forEach(function (a) {
@@ -124,6 +134,8 @@
       save(); var v = q ? q.value : "", y = window.scrollY; home(); if ($("q")) { $("q").value = v; filterHome(); } window.scrollTo(0, y);
     }
     view.onclick = function (e) {
+      var pk = e.target.closest("[data-pick]");
+      if (pk) { var c = pk.getAttribute("data-pick"), P = homePick(), i = P.indexOf(c); if (i >= 0) { if (P.length > 1) P.splice(i, 1); } else P.push(c); try { localStorage.setItem("acc-pick", JSON.stringify(P)); } catch (er) {} PICK = P; var v = q ? q.value : ""; home(); if ($("q")) { $("q").value = v; filterHome(); } return; }
       var t = e.target.closest("[data-tick]");
       if (t) { e.stopPropagation(); flip(t.getAttribute("data-tick")); return; }
       var c = e.target.closest("[data-code]");
@@ -150,29 +162,82 @@
   }
 
   /* ---------- java code page ---------- */
+  function sents(t) { return String(t || "").split(/(?<=[.!?])\s+(?=[A-Z(])/).filter(Boolean); }
+  function fmt(t) { return esc(t).replace(/O\([^)]*\)/g, '<code class="o">$&</code>'); }
+  function notesHtml(a) {
+    if (!a.about && !a.logic) return "";
+    var h = '<div class="notes">', ab = sents(a.about), lg = sents(a.logic);
+    if (ab.length) h += '<section class="ncard"><h2>About</h2><p class="lead">' + fmt(ab[0]) + "</p>" + (ab.length > 1 ? "<p>" + fmt(ab.slice(1).join(" ")) + "</p>" : "") + "</section>";
+    if (lg.length) h += '<section class="ncard"><h2>The logic</h2>' + (lg.length > 1 ? "<ol>" + lg.map(function (x) { return "<li>" + fmt(x) + "</li>"; }).join("") + "</ol>" : '<p class="lead">' + fmt(lg[0]) + "</p>") + "</section>";
+    return h + "</div>";
+  }
   function codeView(id) {
     var a = algo(id), i = ALGOS.indexOf(a), prev = ALGOS[i - 1], next = ALGOS[i + 1];
     var h = '<div class="row"><button class="btn" id="cback" type="button">← All algorithms</button><span class="sp"></span>';
     h += '<button class="btn" id="cprev" type="button"' + (prev ? "" : " disabled") + '>← L' + (prev ? prev.lec : "") + '</button><button class="btn" id="cnext" type="button"' + (next ? "" : " disabled") + '>L' + (next ? next.lec : "") + ' →</button></div>';
     h += '<div><div class="eyebrow">' + a.cat + ' · L' + a.lec + ' · ' + a.pattern + '</div><h1 style="margin-top:4px">' + esc(a.name) + '</h1></div>';
-    h += '<div class="row"><span class="muted">Java</span><span class="sp"></span><button class="btn" id="ccopy" type="button">Copy code</button></div>';
-    h += '<pre class="code"><code>' + hi(a.code) + "</code></pre>";
+    h += '<div class="row"><span class="muted" id="clabel">Java</span><span class="sp"></span><button class="btn" id="cpeek" type="button" hidden>Show reference</button><button class="btn" id="cmode" type="button">Code</button></div>';
+    h += '<div id="practice" hidden><p class="muted" style="margin:0 0 10px">Write it from memory. No time limit. Your draft saves in this browser. Press Tab to indent.</p><div id="edhost"></div><div class="row" style="margin-top:12px"><button class="btn" id="preset" type="button">Reset</button></div></div>';
+    h += '<pre class="code" id="ref"><code>' + hi(a.code) + "</code></pre>";
+    h += notesHtml(a);
     view.innerHTML = h; view.onclick = null;
     $("cback").onclick = function () { location.hash = ""; };
     if (prev) $("cprev").onclick = function () { location.hash = prev.id; };
     if (next) $("cnext").onclick = function () { location.hash = next.id; };
-    $("ccopy").onclick = function () {
-      var b = this, ok = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy code"; }, 1200); };
-      function fallback() { var t = document.createElement("textarea"); t.value = a.code; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); ok(); } catch (e) {} t.remove(); }
-      try { navigator.clipboard.writeText(a.code).then(ok, fallback); } catch (e) { fallback(); }
+    var dk = "a:" + a.id, ed = null, on = false;
+    function starter() { return "public class Main {\n    public static void main(String[] args) {\n        \n    }\n}"; }
+    $("cmode").onclick = function () {
+      on = !on; $("practice").hidden = !on; $("ref").hidden = on; $("cpeek").hidden = !on; $("cpeek").textContent = "Show reference";
+      this.textContent = on ? "Close editor" : "Code"; $("clabel").textContent = on ? "Your code" : "Java";
+      if (on && !ed) {
+        S.draft = S.draft || {};
+        ed = makeEditor($("edhost"), S.draft[dk] || starter(), function () {});
+        ed.addEventListener("input", function () { S.draft[dk] = ed.value; save(); });
+      }
+      if (on && ed) ed.focus();
     };
+    $("cpeek").onclick = function () { var hid = $("ref").hidden; $("ref").hidden = !hid; this.textContent = hid ? "Hide reference" : "Show reference"; };
+    $("preset").onclick = function () { if (!ed) return; ed.value = starter(); ed.dispatchEvent(new Event("input")); ed.focus(); };
   }
+
+  /* ---------- guide ---------- */
+  var KEYS = [["Esc", "Back to the home page from anywhere"], ["/", "Search topics"], ["1  2  3", "Show or hide CAT-1, CAT-2 and FAT on the Algorithms page"], ["a", "Algorithms"], ["p", "Problems"], ["m", "Mock exam"], ["?", "Open this guide"], ["c", "Copy the Java code on a topic page"], ["g then i", "Open the IDE scratchpad"], ["Tab", "Indent inside any code editor"], ["Ctrl + Enter", "Review or submit from a code editor"]];
+  function guide() {
+    view.onclick = null;
+    var h = '<div><h1>Welcome to AccDone</h1></div>';
+    h += '<div style="height:18px"></div>';
+    h += '<section class="ncard"><h2>Keyboard shortcuts</h2><div class="keys">' + KEYS.map(function (k) { return "<div><span>" + k[0].split(/\s{2,}/).map(function (x) { return "<kbd>" + esc(x) + "</kbd>"; }).join(" ") + "</span><em>" + esc(k[1]) + "</em></div>"; }).join("") + "</div></section>";
+    view.innerHTML = h;
+  }
+  function toast(t) { var d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 1400); }
+  function copyText(t) {
+    function fb() { var x = document.createElement("textarea"); x.value = t; document.body.appendChild(x); x.select(); try { document.execCommand("copy"); toast("Code copied"); } catch (e) {} x.remove(); }
+    try { navigator.clipboard.writeText(t).then(function () { toast("Code copied"); }, fb); } catch (e) { fb(); }
+  }
+  var gWait = 0;
+  document.addEventListener("keydown", function (e) {
+    var t = e.target && e.target.tagName;
+    if (e.ctrlKey || e.metaKey || e.altKey || t === "INPUT" || t === "TEXTAREA" || t === "SELECT" || e.key.length !== 1) return;
+    var k = e.key.toLowerCase();
+    if (gWait && Date.now() < gWait) { gWait = 0; if (k === "i") { e.preventDefault(); var l = document.createElement("a"); l.href = "ide.html"; document.body.appendChild(l); l.click(); l.remove(); return; } }
+    if (k === "g") { gWait = Date.now() + 1200; return; }
+    if (k === "a") { e.preventDefault(); if (location.hash) location.hash = ""; go("home"); }
+    else if (k === "p") { e.preventDefault(); go("solve"); }
+    else if (k === "m") { e.preventDefault(); go("mock"); }
+    else if (k === "?") { e.preventDefault(); go("guide"); }
+    else if (k === "c" && mode === "code") { var a = algo(decodeURIComponent((location.hash || "").slice(1))); if (a) { e.preventDefault(); copyText(a.code); } }
+    else if ((k === "1" || k === "2" || k === "3") && mode === "home") { var b = view.querySelector('[data-pick="' + BUCKETS[+k - 1] + '"]'); if (b) { e.preventDefault(); b.click(); } }
+  });
   function route() {
     var id = decodeURIComponent((location.hash || "").slice(1));
     if (id && algo(id)) { mode = "code"; clearInterval(timer); timer = null; LANG = "java"; nav(); codeView(id); enter(); window.scrollTo(0, 0); }
     else if (mode === "code") { go("home"); }
   }
   window.addEventListener("hashchange", route);
+  function toHome() { if (location.hash) location.hash = ""; var q = $("q"); if (q && q.value) q.value = ""; if (mode !== "home") go("home"); else { if (typeof filterHome === "function") filterHome(); window.scrollTo(0, 0); } if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !e.defaultPrevented) { e.preventDefault(); toHome(); } });
+  var brand = document.querySelector(".brand");
+  if (brand) { brand.setAttribute("role", "button"); brand.setAttribute("tabindex", "0"); brand.setAttribute("title", "Home (Esc)"); brand.style.cursor = "pointer"; brand.addEventListener("click", toHome); brand.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toHome(); } }); }
 
   /* ---------- code editor ---------- */
   function makeEditor(host, initial, onSubmit) {
@@ -212,8 +277,6 @@
   }
 
   /* ---------- mock exam ---------- */
-  var sample = null;
-  try { var su = window.claude && window.claude.use ? window.claude.use("sample") : null; if (su && su.then) su.then(function (s) { sample = s || null; }, function () { sample = null; }); } catch (e) {}
   function pickRandom() {
     var w = ALGOS.map(function (a) { return (4 - conf(a.id)) * (isDue(a.id) ? 2 : 1); }), tot = w.reduce(function (x, y) { return x + y; }, 0), r = Math.random() * tot;
     for (var i = 0; i < ALGOS.length; i++) { r -= w[i]; if (r <= 0) return ALGOS[i].id; }
@@ -259,20 +322,10 @@
     else h += '<p class="muted">No reference or key points saved for this topic yet.</p>';
     h += '<div class="grid2"><div><h2>Your code</h2><pre class="code"><code>' + hi(code) + '</code></pre></div><div><h2>Reference</h2><pre class="code"><code>' + (a.code ? hi(a.code) : "No reference code saved yet.") + "</code></pre></div></div>";
     if (a.idea) h += '<div class="card"><h2>The idea</h2><p>' + esc(a.idea) + "</p></div>";
-    h += '<div class="row"><button class="btn" id="ai" type="button">Ask Claude to review my code</button></div><div class="card ai" id="aiout" hidden></div>';
+    h += '<div class="row"></div>';
     h += '<div class="card"><h2>How well did you know it? Time taken: ' + mins + ' min' + (hinted ? ', hint used' : '') + '</h2><div class="row">' + LEVELS.map(function (l, i) { return '<button class="btn" type="button" data-r="' + i + '">' + l + "</button>"; }).join("") + "</div></div>";
     view.innerHTML = h;
     view.onclick = function (e) { var b = e.target.closest("[data-r]"); if (b) { record(a.id, "mock", +b.getAttribute("data-r"), mins, hinted); go("home"); } };
-    $("ai").onclick = async function () {
-      var out = $("aiout"); out.hidden = false;
-      if (!sample) { out.textContent = "Claude is not available in this view."; return; }
-      out.textContent = "Reading your code …"; $("ai").disabled = true;
-      try {
-        var r = await sample("A student wrote this Java from memory for the exam question 'Implement " + a.name + "'.\n```java\n" + code + "\n```\nReference idea: " + (a.idea || "none") + "\nReply in under 120 words: is it correct, what would fail or not compile, and the one most important fix. Be direct.", { cache: false, onText: function (o) { if (o && o.text) out.textContent = o.text; } });
-        out.textContent = r.text;
-      } catch (e) { out.textContent = "Claude could not answer. Try again."; }
-      $("ai").disabled = false;
-    };
   }
 
   /* ---------- problems ---------- */

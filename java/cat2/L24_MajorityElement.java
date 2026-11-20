@@ -1,21 +1,37 @@
-public class MajorityElement {
-
-    // Boyer-Moore voting: O(n) time, O(1) space
-    static int majority(int[] a) {
-        int candidate = 0, count = 0;
-        for (int x : a) {
-            if (count == 0) candidate = x;
-            count += (x == candidate) ? 1 : -1;
-        }
-        // verify: the candidate may not be a real majority
-        int occurrences = 0;
-        for (int x : a) if (x == candidate) occurrences++;
-        return occurrences * 2 > a.length ? candidate : -1;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(majority(new int[]{3, 3, 4, 2, 4, 4, 2, 4, 4}));  // 4
-        System.out.println(majority(new int[]{3, 3, 4, 2, 4, 4, 2, 4}));     // -1
-        System.out.println(majority(new int[]{1}));                          // 1
-    }
+// Java program to find Majority
+// element in an array
+class Main {
+static int majorityElement(int[] arr) {
+int n = arr.length;
+int candidate = -1;
+int count = 0;
+// Find a candidate
+for (int num : arr) {
+if (count == 0) {
+candidate = num;
+count = 1;
+} else if (num == candidate) {
+count++;
+} else {
+count--;
+}
+}
+// Validate the candidate
+count = 0;
+for (int num : arr) {
+if (num == candidate) {
+count++;
+}
+}
+// If count is greater than n / 2, return the candidate; otherwise, return -1
+if (count > n / 2) {
+return candidate;
+} else {
+return -1;
+}
+}
+public static void main(String[] args) {
+int[] arr = {1, 1, 2, 1, 3, 5, 1};
+System.out.println(majorityElement(arr));
+}
 }

@@ -1,30 +1,64 @@
-public class ToggleAndApples {
+import java.util.*;
 
-    // Toggle the switch: n bulbs, round i toggles every i-th bulb.
-    // Bulb k ends ON only if k has an odd number of divisors,
-    // which happens only for perfect squares.
-    static long bulbsOn(long n) {
-        return (long) Math.sqrt(n);
-    }
-
-    // Alice's apple tree: smallest square plot (centred at the origin)
-    // holding at least needed apples. Plot of half-side k holds
-    // 2k(k+1)(2k+1) apples, perimeter is 8k.
-    static long minPerimeter(long needed) {
-        long lo = 1, hi = 100_000;
-        while (lo < hi) {
-            long mid = (lo + hi) / 2;
-            if (2 * mid * (mid + 1) * (2 * mid + 1) >= needed) hi = mid;
-            else lo = mid + 1;
-        }
-        return 8 * lo;
-    }
-
+// Alice apple tree
+import java.util.*;
+public class AliceLoop {
     public static void main(String[] args) {
-        System.out.println(bulbsOn(10));              // 3
-        System.out.println(bulbsOn(100));             // 10
-        System.out.println(minPerimeter(1));          // 8
-        System.out.println(minPerimeter(13));         // 16
-        System.out.println(minPerimeter(1_000_000_000L)); // 5040
+        Scanner sc=new Scanner(System.in);
+        int apple=sc.nextInt();
+        int cnt=0,sum=0;
+        while(sum<apple){
+            cnt++;
+            sum+=(12*cnt*cnt);
+
+        }
+        System.out.println((8*(cnt)));
     }
+}
+
+class AliceBinary {
+    static long minimumPerimeter(long neededApples) {
+        long left = 1;
+        long right = 100000;
+        while (left < right) {
+            long r = (left + right) / 2;
+            if (2 * r * (r + 1) * (2 * r + 1) >= neededApples) {
+                right = r;
+            } else {
+                left = r + 1;
+            }
+        }
+        return left * 8;
+    }
+    public static void main(String args[])
+    {
+        System.out.println(minimumPerimeter(1));
+    }
+}
+
+//Toggle the switch
+class Toggle {
+public static void main(String[] args) {
+Scanner sc=new Scanner(System.in);
+int n=sc.nextInt();
+//System.out.println((int)Math.sqrt(n));
+  boolean b[] = new boolean[n+1];
+  int i,j,c=0;
+  for(i=2;i<=n;i++)
+        {
+          for(j=i;j<=n;j+=i)
+          {
+            if(b[j]==false)
+              b[j] = true;
+            else
+              b[j] = false;
+          } }
+  for(i=1;i<=n;i++)
+        {
+          if(b[i]==false)
+            c++;
+        }
+  System.out.println(c);
+
+}
 }

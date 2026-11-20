@@ -13,7 +13,7 @@
 <body>
 <div class="ide">
   <aside class="side">
-    <div class="shead"><span>Explorer</span><button class="icon" id="newbtn" type="button" aria-label="New file" title="New file">+</button></div>
+    <div class="shead"><a class="homeln" href="./" title="Back to AccDone (Esc)">← AccDone</a><button class="icon" id="newbtn" type="button" aria-label="New file" title="New file">+</button></div>
     <div class="files" id="files"></div>
     <div class="sfoot">Files save in this browser.</div>
   </aside>
@@ -21,7 +21,6 @@
   <section class="center">
     <div class="tabrow">
       <div class="tabs" role="tablist" id="tabs"></div>
-      <button class="run" id="run" type="button">Run <kbd>Ctrl+Enter</kbd></button>
     </div>
     <div class="editor">
       <div class="gutter" aria-hidden="true"><div id="nums"></div></div>
@@ -30,29 +29,7 @@
         <textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Code editor"></textarea>
       </div>
     </div>
-    <div class="term">
-      <div class="thead"><span>Output</span><span id="note">Simulated by Claude, not a real Java run</span></div>
-      <pre id="out" class="dim">Press Run. Claude reads the open file and prints what Java would print, or the compile errors.
-Before the exam, also run it once on a real JDK.</pre>
-    </div>
   </section>
-
-  <aside class="chat">
-    <div class="chead"><b>Claude</b><span id="astate">Ready</span></div>
-    <div id="msgs">
-      <div class="m a"><div class="tx">Write your algorithm in the editor. Ask me to review it, explain it, or quiz you with a random algorithm to code from scratch.</div></div>
-    </div>
-    <div class="chips">
-      <button class="chip" data-p="review" type="button">Review my code</button>
-      <button class="chip" data-p="quiz" type="button">Quiz me</button>
-      <button class="chip" data-p="explain" type="button">Explain this file</button>
-      <button class="chip" data-p="hint" type="button">Give a hint</button>
-    </div>
-    <form class="compose" id="form">
-      <textarea id="q" placeholder="Ask about your code" aria-label="Message Claude"></textarea>
-      <button class="send" id="send" type="submit">Send</button>
-    </form>
-  </aside>
 
   <div class="status">
     <div><span>Java</span><span>Spaces: 4</span></div>

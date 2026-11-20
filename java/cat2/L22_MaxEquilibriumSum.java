@@ -1,24 +1,40 @@
-public class MaxEquilibriumSum {
+// Maximum equilibrium sum
 
-    // Index i is an equilibrium when sum(a[0..i]) == sum(a[i..n-1]).
-    // Return the largest such prefix sum, or null when none exists.
-    static Long maxEquilibrium(int[] a) {
-        long total = 0;
-        for (int x : a) total += x;
+// equilibrium sum.
+import java.io.*;
 
-        long prefix = 0;
-        Long best = null;
-        for (int i = 0; i < a.length; i++) {
-            prefix += a[i];
-            long suffix = total - prefix + a[i];
-            if (prefix == suffix && (best == null || prefix > best)) best = prefix;
+class GFG {
+
+    // Function to find maximum
+    // equilibrium sum.
+    static int findMaxSum(int []arr, int n)
+    {
+        int res = Integer.MIN_VALUE;
+
+        for (int i = 0; i < n; i++)
+        {
+            int prefix_sum = arr[i];
+
+            for (int j = 0; j < i; j++)
+                prefix_sum += arr[j];
+
+            int suffix_sum = arr[i];
+
+            for (int j = n - 1; j > i; j--)
+                suffix_sum += arr[j];
+
+            if (prefix_sum == suffix_sum)
+                res = Math.max(res, prefix_sum);
         }
-        return best;
+
+        return res;
     }
 
-    public static void main(String[] args) {
-        System.out.println(maxEquilibrium(new int[]{-1, 2, 3, 0, 3, 2, -1}));  // 4
-        System.out.println(maxEquilibrium(new int[]{1, 2, 3}));                // null
-        System.out.println(maxEquilibrium(new int[]{2, 2, 2, 2, 2}));          // 6
+    // Driver Code
+    public static void main (String[] args)
+    {
+        int arr[] = {-2, 5, 3, 1, 2, 6, -4, 2 };
+        int n = arr.length;
+        System.out.println(findMaxSum(arr, n));
     }
 }

@@ -1,30 +1,39 @@
-public class HourglassSum {
+//Hour glass
+import java.io.*;
 
-    // Hourglass:  a b c
-    //               d
-    //             e f g
-    static int maxHourglass(int[][] g) {
-        int best = Integer.MIN_VALUE;
-        for (int r = 0; r + 2 < g.length; r++) {
-            for (int c = 0; c + 2 < g[0].length; c++) {
-                int sum = g[r][c] + g[r][c + 1] + g[r][c + 2]
-                        + g[r + 1][c + 1]
-                        + g[r + 2][c] + g[r + 2][c + 1] + g[r + 2][c + 2];
-                best = Math.max(best, sum);
-            }
+class Main {
+
+static int R = 5;
+static int C = 5;
+static int findMaxSum(int [][]mat)
+{
+    if (R < 3 || C < 3){
+        System.out.println("Not possible");
+        System.exit(0);
+    }
+    int max_sum = Integer.MIN_VALUE;
+    for (int i = 0; i < R - 2; i++)
+    {
+        for (int j = 0; j < C - 2; j++)
+        {
+            int sum = (mat[i][j] + mat[i][j + 1] +
+                    mat[i][j + 2]) + (mat[i + 1][j + 1]) +
+                    (mat[i + 2][j] + mat[i + 2][j + 1] +
+                    mat[i + 2][j + 2]);
+            max_sum = Math.max(max_sum, sum);
         }
-        return best;
+    }
+    return max_sum;
+}
+    static public void main (String[] args)
+    {
+        int [][]mat = {{1, 2, 3, 0, 0},
+                    {0, 0, 0, 0, 0},
+                    {2, 1, 4, 0, 0},
+                    {0, 0, 0, 0, 0},
+                    {1, 1, 0, 1, 0}};
+        int res = findMaxSum(mat);
+        System.out.println("Maximum sum of hour glass = "+ res);
     }
 
-    public static void main(String[] args) {
-        int[][] g = {
-            {1, 1, 1, 0, 0, 0},
-            {0, 1, 0, 0, 0, 0},
-            {1, 1, 1, 0, 0, 0},
-            {0, 0, 2, 4, 4, 0},
-            {0, 0, 0, 2, 0, 0},
-            {0, 0, 1, 2, 4, 0}
-        };
-        System.out.println(maxHourglass(g));   // 19
-    }
 }
