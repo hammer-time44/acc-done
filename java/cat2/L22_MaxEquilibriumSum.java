@@ -1,40 +1,42 @@
-// Maximum equilibrium sum
-
-// equilibrium sum.
+import java.util.Scanner;
 import java.io.*;
-
-class GFG {
-
-    // Function to find maximum
-    // equilibrium sum.
-    static int findMaxSum(int []arr, int n)
+public class Main
+{
+    public static int equlibrium_sum(int a[],int n)
     {
-        int res = Integer.MIN_VALUE;
-
-        for (int i = 0; i < n; i++)
+        int i;
+        int sum =0,max =0,prefix_sum=0;
+        for( i=0;i<n;i++)
         {
-            int prefix_sum = arr[i];
-
-            for (int j = 0; j < i; j++)
-                prefix_sum += arr[j];
-
-            int suffix_sum = arr[i];
-
-            for (int j = n - 1; j > i; j--)
-                suffix_sum += arr[j];
-
-            if (prefix_sum == suffix_sum)
-                res = Math.max(res, prefix_sum);
+            sum =sum+a[i];
+        } for(i=0;i<n;i++)
+        {
+            prefix_sum +=a[i];
+            if (prefix_sum == sum)
+            {
+                if(max<prefix_sum)
+                {
+                    max=prefix_sum;
+                }
+            }
+            sum = sum - a[i];
         }
-
-        return res;
+        return max;
     }
-
-    // Driver Code
     public static void main (String[] args)
     {
-        int arr[] = {-2, 5, 3, 1, 2, 6, -4, 2 };
-        int n = arr.length;
-        System.out.println(findMaxSum(arr, n));
+        Scanner sw = new Scanner(System.in);
+        System.out.println("Enter the size of the array");
+
+        int n=sw.nextInt();
+        int arr[] = new int[n];
+        System.out.println("Enter the elements of the array");
+        for(int i =0;i<n;i++) arr[i]=sw.nextInt();
+        int result=equlibrium_sum(arr, n);
+        if(result==0)
+            System.out.println("None");
+        else
+            System.out.println("Maximum equilibrium sum :"+result);
+
     }
 }

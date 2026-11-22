@@ -1,43 +1,47 @@
-// Java program to find length of
-// longest subsegment of all 1's
-// by changing at most k 0's
-import java.io.*;
+import java.util.Scanner; // Import Scanner class for user input
 
-class Main {
+public class Longafterflip {
+    // Method to find the longest sequence of consecutive 1s after flipping one bit
+    public static int longestConsecutiveOnes(int n) {
+        // Convert the integer to its binary string representation
+        String binary = Integer.toBinaryString(n);
 
-static int longestSubSeg(int a[], int n,int k)
-{
-    int cnt0 = 0;
-    int l = 0;
-    int max_len = 0;
+        // Variables to track the maximum sequence length and intermediate lengths
+        int maxLength = 0;
+        int currentLength = 0;
+        int previousLength = 0;
 
-    // i decides current ending point
-    for (int i = 0; i < n; i++) {
-        if (a[i] == 0)
-            cnt0++;
+        // Iterate through each bit in the binary string
+        for (char bit : binary.toCharArray()) {
+            if (bit == '1') {
+                // Increase the count of consecutive 1s
+                currentLength++;
+            } else {
+                // Update maxLength by considering a possible flip
+                maxLength = Math.max(maxLength, currentLength + previousLength + 1);
 
-        // If there are more 0's move
-        // left point for current ending
-        // point.
-        while (cnt0 > k) {
-            if (a[l] == 0)
-                cnt0--;
-            l++;
+                // Store the current sequence length and reset it
+                previousLength = currentLength;
+                currentLength = 0;
+            }
         }
-
-        max_len = Math.max(max_len, i - l + 1);
+        // Final update to maxLength after the loop ends
+        maxLength = Math.max(maxLength, currentLength + previousLength + 1);
+        return maxLength;
     }
 
-    return max_len;
-}
+    public static void main(String[] args) {
+        // Create a Scanner object to take user input
+        Scanner scanner = new Scanner(System.in);
 
-// Driver code
-public static void main (String[] args)
-{
-    int a[] = { 1, 1, 0, 0, 1, 1, 1, 1, 1 };
-    int k = 1;
-    int n = a.length;
-    System.out.println( longestSubSeg(a, n, k));
+        // Prompt user for an integer input
+        System.out.print("Enter an integer: ");
+        int n = scanner.nextInt();
 
-}
+        // Compute and display the longest consecutive ones after flipping one bit
+        System.out.println("Longest consecutive ones after one flip: " +
+            longestConsecutiveOnes(n));
+        // Close the scanner to prevent resource leak
+        scanner.close();
+    }
 }

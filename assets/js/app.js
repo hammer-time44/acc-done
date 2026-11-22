@@ -48,13 +48,13 @@
   window.addEventListener("resize", slide);
   function nav() {
     var n = $("nav");
-    if (!n.querySelector("button")) n.innerHTML = '<span class="ind" id="ind"></span>' + MODES.map(function (m) { return '<button type="button" data-m="' + m[0] + '" aria-current="false">' + m[1] + "</button>"; }).join("");
+    if (!n.querySelector("button")) n.innerHTML = '<span class="ind" id="ind"></span>' + MODES.map(function (m) { return (m[0] === "guide" ? '<button type="button" data-pdf="assets/pdf/Acc.pdf" aria-current="false" title="Open Acc.pdf in a new tab">Acc</button>' : "") + '<button type="button" data-m="' + m[0] + '" aria-current="false">' + m[1] + "</button>"; }).join("");
     n.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-current", b.getAttribute("data-m") === (mode === "code" ? "home" : mode)); });
     slide();
     if ($("finder")) $("finder").hidden = mode !== "home";
     var l = leftLabel(); $("count").textContent = l ? (/h/.test(l) ? l + " to exam" : l) : "";
   }
-  $("nav").addEventListener("click", function (e) { var b = e.target.closest("[data-m]"); if (b) go(b.getAttribute("data-m")); });
+  $("nav").addEventListener("click", function (e) { var d = e.target.closest("[data-pdf]"); if (d) { window.open(d.getAttribute("data-pdf"), "_blank", "noopener"); return; } var b = e.target.closest("[data-m]"); if (b) go(b.getAttribute("data-m")); });
   var RM = window.matchMedia("(prefers-reduced-motion: reduce)"), enterT;
   function enter() {
     view.classList.remove("enter"); void view.offsetWidth; view.classList.add("enter");

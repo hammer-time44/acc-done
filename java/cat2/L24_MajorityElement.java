@@ -1,37 +1,62 @@
-// Java program to find Majority
-// element in an array
-class Main {
-static int majorityElement(int[] arr) {
-int n = arr.length;
-int candidate = -1;
-int count = 0;
-// Find a candidate
-for (int num : arr) {
-if (count == 0) {
-candidate = num;
-count = 1;
-} else if (num == candidate) {
-count++;
-} else {
-count--;
-}
-}
-// Validate the candidate
-count = 0;
-for (int num : arr) {
-if (num == candidate) {
-count++;
-}
-}
-// If count is greater than n / 2, return the candidate; otherwise, return -1
-if (count > n / 2) {
-return candidate;
-} else {
-return -1;
-}
-}
-public static void main(String[] args) {
-int[] arr = {1, 1, 2, 1, 3, 5, 1};
-System.out.println(majorityElement(arr));
-}
+import java.util.Scanner;
+
+public class MajorityElementFinder {
+
+    // Function to find the majority element
+    public static int findMajorityElement(int[] arr, int n) {
+        // Phase 1: Find the candidate for the majority element
+        int candidate = -1; // Use a valid placeholder for int
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (count == 0) {
+                candidate = arr[i];
+                count = 1;
+            } else if (candidate == arr[i]) {
+                count++;
+            } else {
+                count--;
+            }
+        }
+
+        // Phase 2: Verify if the candidate is the majority element
+        count = 0;
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == candidate) {
+                count++;
+            }
+        }
+
+        // Return the candidate if it is the majority element, otherwise return -1
+        return (count > n / 2) ? candidate : -1; // Returning -1 if no majority found
+    }
+
+    public static void main(String[] args) {
+        // Create a scanner object to take input from the user
+        Scanner scanner = new Scanner(System.in);
+
+        // Taking input for the size of the array
+        System.out.print("Enter the number of elements in the array: ");
+        int n = scanner.nextInt();
+
+        // Initialize the array with the input size
+        int[] arr = new int[n];
+
+        // Taking array input from the user
+        System.out.println("Enter the elements of the array:");
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+
+        // Finding and printing the majority element
+        int result = findMajorityElement(arr, n);
+        if (result != -1) {
+            System.out.println("The majority element is: " + result);
+        } else {
+            System.out.println("There is no majority element.");
+        }
+
+        // Close the scanner
+        scanner.close();
+    }
 }

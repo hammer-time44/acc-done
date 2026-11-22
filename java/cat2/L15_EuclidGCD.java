@@ -1,34 +1,30 @@
-// Java program to demonstrate Basic Euclidean Algorithm
+import java.util.Scanner;
 
-import java.lang.*;
-import java.util.*;
+public class Main {
 
-class Main {
-
-    public static int gcd(int a, int b)
-    {
-        if (a == 0)
+    public static int findgcd(int a, int b) {
+        if (a == 0) {
             return b;
-
-        return gcd(b % a, a);
+        }
+        return findgcd(b % a, a); // Recursively call with the new pair
     }
 
-    // Driver code
-    public static void main(String[] args)
-    {
-        int a = 10, b = 15, g;
-        g = gcd(a, b);
-        System.out.println("GCD(" + a + " , " + b
-                        + ") = " + g);
-        a = 35;
-        b = 10;
-        g = gcd(a, b);
-        System.out.println("GCD(" + a + " , " + b
-                        + ") = " + g);
-        a = 31;
-        b = 2;
-        g = gcd(a, b);
-        System.out.println("GCD(" + a + " , " + b
-                        + ") = " + g);
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Get user input for two numbers
+        System.out.print("Enter first number: ");
+        int a = sc.nextInt();
+
+        System.out.print("Enter second number: ");
+        int b = sc.nextInt();
+
+        // Find GCD using the findgcd method
+        int g = findgcd(a, b);
+
+        // Print the result
+        System.out.println("GCD(" + a + "," + b + ") = " + g);
+
+        sc.close(); // Close the scanner resource
     }
 }

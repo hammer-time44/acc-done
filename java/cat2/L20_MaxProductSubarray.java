@@ -1,34 +1,53 @@
-// Maximum product sub array
-//method 2
-class Solution {
-    public int maxProduct(int[] nums) {
+import java.util.Scanner;
 
-        int n = nums.length;
-        int l=1,r=1;
-        int ans=nums[0];
+class Main {
+    // Function to find the maximum product subarray
+    static int maxSubarrayProduct(int arr[]) {
+        int n = arr.length;
 
-        for(int i=0;i<n;i++){
+        // Initialize variables to keep track of the max, min, and overall max product
+        int maxProduct = arr[0];
+        int minProduct = arr[0];
+        int result = arr[0];
 
-            //if any of l or r become 0 then update it to 1
-            l = l==0 ? 1 : l;
-            r = r==0 ? 1 : r;
+        // Traverse the array from the 2nd element onward
+        for (int i = 1; i < n; i++) {
+            // If the current element is negative, swap the max and min
+            if (arr[i] < 0) {
+                int temp = maxProduct;
+                maxProduct = minProduct;
+                minProduct = temp;
+            }
 
-            l *= nums[i];   //prefix product
-            r *= nums[n-1-i];    //suffix product
+            // Update maxProduct and minProduct
+            maxProduct = Math.max(arr[i], maxProduct * arr[i]);
+            minProduct = Math.min(arr[i], minProduct * arr[i]);
 
-            ans = Math.max(ans,Math.max(l,r));
-
+            // Update the result with the maximum product so far
+            result = Math.max(result, maxProduct);
         }
 
-        return ans;
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input the size of the array
+        System.out.print("Enter the number of elements in the array: ");
+        int n = scanner.nextInt();
+
+        // Input the array elements
+        int[] arr = new int[n];
+        System.out.println("Enter the elements of the array:");
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+
+        // Calculate and print the maximum subarray product
+        int result = maxSubarrayProduct(arr);
+        System.out.println("Maximum subarray product is = " + result);
+
+        scanner.close();
     }
 }
-    class Main
-    {
-        public static void main(String srg[])
-        {
-            Solution S= new Solution();
-            int a[]={1,-2,-3,0,7,-8,-2};
-            System.out.println(S.maxProduct(a));
-        }
-    }

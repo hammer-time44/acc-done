@@ -1,59 +1,45 @@
-/* Combination-> ncr=n!/r!(n-r)!;
-
-Input:
-5
-1 2 3 4 5
-3
-Output:
-1 2 3
-1 2 4
-1 2 5
-1 3 5
-1 3 5
-1 4 5
-2 3 4
-2 3 5
-2 4 5
-3 4 5
-
-Program  */
-
 import java.util.*;
 
-public class Main
-{
-    public static void combination(int arr[],int data[],int start,int end,int index,int r)
-    {
-
-        if (index==r)
-        {
-            for(int i=0;i<r;i++)
-            {
-                System.out.print(data[i]+" ");
-            }
-            System.out.println(" ");
-            return;
+public class CombinationExample {
+    static int fact(int number) {
+        int f = 1;
+        int j = 1;
+        while (j <= number) {
+            f = f * j;
+            j++;
         }
-
-        for(int i=start;i<=end;i++)
-        {
-            data[index]=arr[i];
-            combination(arr,data,i+1,end,index+1,r);
-        }
+        return f;
     }
 
-    public static void main(String[] args) {
-        Scanner input=new Scanner(System.in);
-        int n=input.nextInt();
-        int arr[]=new int [n];
-        for(int i=0;i<n;i++)
-        {
-            arr[i]=input.nextInt();
+    public static void main(String args[]) {
+        Scanner scanner = new Scanner(System.in);
 
+        // Get the size of the list
+        System.out.print("Enter the number of elements in the list: ");
+        int n = scanner.nextInt();
+
+        // Get the list of numbers from the user
+        List<Integer> numbers = new ArrayList<>();
+        System.out.println("Enter the numbers for the list:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter number " + (i + 1) + ": ");
+            numbers.add(scanner.nextInt());
         }
-        int r=input.nextInt();
-        int data[]=new int[r];
-        combination(arr,data,0,n-1,0,r);
 
+        // Display the list
+        System.out.println("Your numbers list: " + numbers);
+        // Get the value of r from the user
+        System.out.print("Enter the value of r: ");
+        int r = scanner.nextInt();
+
+        // Validate and calculate the combination value
+        if (r > n) {
+            System.out.println("The value of r cannot be greater than the size of the list.");
+        } else {
+            int result = fact(n) / (fact(r) * fact(n - r));
+            System.out.println("The combination value for the numbers list is: " + result);
+        }
+
+        scanner.close();
     }
 }

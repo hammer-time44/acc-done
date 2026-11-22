@@ -1,24 +1,22 @@
-class Main {
-public static boolean isPalindrome(int N)
-{
-    // Converting N into binary representation
-    String s = Integer.toBinaryString(N);
-
-    // Checking if it is palindrome or not
-    int i = 0, j = s.length() - 1;
-    while (i < j) {
-    if (s.charAt(i) != s.charAt(j)) {
-        return false;
+import java.util.*;
+public class BinaryPalindromeChecker {
+    public static boolean isBinaryPalindrome(int x) {
+        int reversed = 0;
+        int original = x;
+        while (x > 0) {
+            reversed <<= 1;        // Left shift by 1 bit
+            reversed |= (x & 1);   // Add the least significant bit of 'x' to'reversed'
+            x >>= 1;            // Right shift by 1 bit
+        }
+        return reversed == original;
     }
-    i++;
-    j--;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int x = sc.nextInt();
+        if (isBinaryPalindrome(x)) {
+            System.out.println(x + " has a binary palindrome representation.");
+        } else {
+            System.out.println(x + " does not have a binary palindrome representation.");
+        }
     }
-    return true;
-}
-public static void main(String[] args) {
-    int x = 16;
-    System.out.println(isPalindrome(x));
-    x = 17;
-    System.out.println(isPalindrome(x));
-}
 }

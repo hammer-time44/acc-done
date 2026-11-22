@@ -1,26 +1,40 @@
-  // A Java program to demonstrate the working of Chinese remainder  Theorem
-import java.io.*;
-class Main {
-    static int findMinX(int num[], int rem[], int k)
+import java.util.*;
+
+class ChineseRemainderTheorem
+{
+    public static void main (String[] args)
     {
-        int x = 1; // Initialize result
-        while (true)
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter Divisor");
+        int size = sc.nextInt();
+        int [] div = new int[size];
+        for(int i=0; i<size; i++)
         {
-            int j;
-            for (j=0; j<k; j++ ){
-             if (x%num[j] != rem[j])
-                break;
-            }
-            if (j == k)
-            return x;
-            x++;
+            div[i] = sc.nextInt();
         }
-    }
-    public static void main(String args[])
+
+        System.out.println("Enter Remainder");
+        int rem[]=new int[size];
+        for(int i=0; i<size; i++)
+        {
+            rem[i] = sc.nextInt();
+        }
+
+        ChineseRemainder c = new ChineseRemainder();
+        System.out.println( c.calculate(size, div, rem));
+    } }
+
+class ChineseRemainder {
+    int calculate(int size , int div[], int rem[])
     {
-        int num[] = {3,4,5};
-        int rem[] = {2, 3, 1};
-        int k = num.length;
-        System.out.println("x is " + findMinX(num, rem, k));
-    }
-}
+        int j , x = 1;
+        while(true)
+        {
+            for( j=0;j<size;j++)
+            {
+                if( x % div[j] != rem[j] )
+                    break;
+            }
+            if(j == size)
+                return x;
+            x++;} }}

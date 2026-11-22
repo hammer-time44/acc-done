@@ -1,6 +1,7 @@
-//Strobogrammatic Number:
-import java.util.*;
-class Main {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+public class Strobo {
     static boolean isStrobogrammatic(String num) {
         Map<Character, Character> map = new HashMap<Character, Character>();
         map.put('6', '9');
@@ -16,12 +17,13 @@ class Main {
             l++;
             r--;
         }
-        return true;
-    }
+        return true;}
     public static void main(String args[])
     {
-        Scanner sc=new Scanner(System.in);
-        String n="69";
+        Scanner sc =new Scanner(System.in);
+        System.out.print("Give num :");
+        String n= sc.next();
         System.out.println(isStrobogrammatic(n));
+
     }
 }

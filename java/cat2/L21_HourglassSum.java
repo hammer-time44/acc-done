@@ -1,38 +1,44 @@
-//Hour glass
-import java.io.*;
-
-class Main {
-
-static int R = 5;
-static int C = 5;
-static int findMaxSum(int [][]mat)
-{
-    if (R < 3 || C < 3){
-        System.out.println("Not possible");
-        System.exit(0);
-    }
-    int max_sum = Integer.MIN_VALUE;
-    for (int i = 0; i < R - 2; i++)
+import java.util.Scanner;
+public class Hourglass {
+    static int findMaxSum(int [][]mat,int R,int C)
     {
-        for (int j = 0; j < C - 2; j++)
+        int max_sum=0;
+        int sum;
+
+        if (R < 3 || C < 3){
+            System.out.println("Not possible");
+            System.exit(0);
+        }
+        for (int i = 0; i < R - 2; i++)
         {
-            int sum = (mat[i][j] + mat[i][j + 1] +
+            for (int j = 0; j < C - 2; j++)
+            {
+                sum = (mat[i][j] + mat[i][j + 1] +
                     mat[i][j + 2]) + (mat[i + 1][j + 1]) +
                     (mat[i + 2][j] + mat[i + 2][j + 1] +
                     mat[i + 2][j + 2]);
-            max_sum = Math.max(max_sum, sum);
+                max_sum = Math.max(max_sum, sum);
+            }
         }
+        return max_sum;
     }
-    return max_sum;
-}
     static public void main (String[] args)
     {
-        int [][]mat = {{1, 2, 3, 0, 0},
-                    {0, 0, 0, 0, 0},
-                    {2, 1, 4, 0, 0},
-                    {0, 0, 0, 0, 0},
-                    {1, 1, 0, 1, 0}};
-        int res = findMaxSum(mat);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the number of rows");
+
+        int R = sc.nextInt();
+        System.out.println("Enter the number of columns");
+        int C= sc.nextInt();
+
+        int [][]mat = new int[R][C];
+        System.out.println("Enter the elements of the matrix");
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                mat[i][j]= sc.nextInt();
+            }
+        }
+        int res = findMaxSum(mat,R,C);
         System.out.println("Maximum sum of hour glass = "+ res);
     }
 

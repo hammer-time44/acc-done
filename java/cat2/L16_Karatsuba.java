@@ -1,42 +1,37 @@
-// Karatsuba Alg
-class Main {
-    public static long mult(long x, long y) {
-        if (x < 10 && y < 10) {
+import java.util.Scanner;
+
+public class KaratsubaMultiplication {
+    public static long karatsubaMultiply(long x, long y) {
+        if (x < 10 || y < 10) {
             return x * y;
         }
-        int noOneLength = numLength(x);
-        int noTwoLength = numLength(y);
-        int maxNumLength
-            = Math.max(noOneLength, noTwoLength);
-        Integer halfMaxNumLength
-            = (maxNumLength / 2) + (maxNumLength % 2);
-        long maxNumLengthTen
-            = (long)Math.pow(10, halfMaxNumLength);
-        long a = x / maxNumLengthTen;
-        long b = x % maxNumLengthTen;
-        long c = y / maxNumLengthTen;
-        long d = y % maxNumLengthTen;
-        long z0 = mult(a, c);
-        long z1 = mult(a + b, c + d);
-        long z2 = mult(b, d);
+        int n = Math.max(Long.toString(x).length(), Long.toString(y).length());
+        int half = (n + 1) / 2;
 
-long ans = (z0 * (long)Math.pow(10, halfMaxNumLength * 2) +
-((z1 - z0 - z2) * (long)Math.pow(10, halfMaxNumLength) + z2));
+        long a = x / (long) Math.pow(10, half);
+        long b = x % (long) Math.pow(10, half);
+        long c = y / (long) Math.pow(10, half);
+        long d = y % (long) Math.pow(10, half);
 
-        return ans;
+        long ac = karatsubaMultiply(a, c);
+        long bd = karatsubaMultiply(b, d);
+        long adbc = karatsubaMultiply(a + b, c + d) - ac - bd;
 
+        return (long) (ac * Math.pow(10, 2 * half) + adbc * Math.pow(10, half) + bd);
     }
-    public static int numLength(long n)
-    {
-        int noLen = 0;
-        while (n > 0) {
-            noLen++;
-            n /= 10;
-        }
-        return noLen;
-    }
-    public static void main(String[] args)
-    {
-        System.out.println(mult(1234,5678));
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the first number: ");
+        long x = scanner.nextLong();
+
+        System.out.print("Enter the second number: ");
+        long y = scanner.nextLong();
+
+        long product = karatsubaMultiply(x, y);
+        System.out.println("Product: " + product);
+
+        scanner.close();
     }
 }

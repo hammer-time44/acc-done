@@ -31,6 +31,7 @@ Progress and code drafts save in the browser (`localStorage`). The main page nee
 ├── ide.html
 ├── assets/
 │   ├── favicon.svg
+│   ├── pdf/        Acc.pdf (opened by the Acc button)
 │   ├── css/        ambient.css, app.css, ide.css
 │   └── js/
 │       ├── app.js
